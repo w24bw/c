@@ -1,9 +1,9 @@
 #include <stdio.h>
 int main()
 {
-    char name[20];
-    printf("请输入姓名：");
-    scanf("%s",name);
-    printf("你好：%s\n",name);
+    int a,b;
+    printf("请输入两个整数：");
+    scanf("%d%d",&a,&b);
+    printf("两数相加结果：%d",a+b);
     return 0;
 }
