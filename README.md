@@ -1,2 +1,2 @@
-# c
-melancholy
+# C语言Git作业
+V1：姓名输入输出C程序
