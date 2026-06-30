@@ -1,13 +1,13 @@
 // ex04.ino - 触摸“自锁”开关
-const int touchPin = 4;      // T0 触摸通道对应 GPIO4
-const int ledPin = 2;        // 板载 LED
+const int touchPin = 4;
+const int ledPin = 2;
 
-// 触摸阈值，低于该值判定为触摸
-const int touchThreshold = 300;
+// 触摸阈值（已根据你的测试校准）
+const int touchThreshold = 500;
 
 // 状态变量
-bool ledState = LOW;          // LED 状态
-bool lastTouchState = false;  // 上一次触摸状态
+bool ledState = false;
+bool lastTouchState = false;
 bool currentTouchState = false;
 
 // 防抖
@@ -17,17 +17,16 @@ const unsigned long debounceDelay = 50;
 void setup() {
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, ledState);
+  digitalWrite(ledPin, LOW);
+  Serial.println("Touch Self-Locking Switch Started");
+  Serial.println("Threshold: 500");
 }
 
 void loop() {
-  // 1. 读取原始触摸值
   int touchValue = touchRead(touchPin);
-
-  // 2. 判断当前是否处于触摸状态
   bool rawTouchState = (touchValue < touchThreshold);
 
-  // 3. 防抖处理
+  // 防抖
   if (rawTouchState != lastTouchState) {
     lastDebounceTime = millis();
   }
@@ -36,11 +35,14 @@ void loop() {
     if (rawTouchState != currentTouchState) {
       currentTouchState = rawTouchState;
 
-      // 4. 边缘检测: 检测到从"未触摸"到"触摸"的瞬间
+      // 边缘检测：未触摸→触摸的瞬间
       if (currentTouchState == true) {
         ledState = !ledState;
         digitalWrite(ledPin, ledState);
-        Serial.println(ledState ? "LED ON" : "LED OFF");
+        Serial.print("Touch! Value: ");
+        Serial.print(touchValue);
+        Serial.print(" LED: ");
+        Serial.println(ledState ? "ON" : "OFF");
       }
     }
   }
